@@ -1,5 +1,8 @@
 import { nanoid } from 'nanoid';
 import { Component } from 'react';
+import Filter from './Filter/Filter';
+import ContactForm from './ContactForm/ContactForm';
+import ContactList from './ContactList/ContactList';
 
 export class App extends Component {
   state = {
@@ -10,91 +13,75 @@ export class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    name: '',
-    number: '',
   };
 
   handleOnInputChange = e => {
+    e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
   };
 
   handleOnFindInputChange = e => {
+    e.preventDefault();
     const { contacts } = this.state;
     let name = e.target.value;
     const findedContacts = contacts.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
+      contact.name.toLowerCase().trim().includes(name.toLowerCase())
     );
     this.setState({ filter: findedContacts });
   };
 
   handleOnSubmit = e => {
     e.preventDefault();
-    this.setState(prev => {
-      return {
-        contacts: [
-          ...prev.contacts,
-          { id: nanoid(), name: this.state.name, number: this.state.number },
-        ],
-        name: '',
-      };
+    const contacts = this.state.contacts;
+    const names = contacts.map(contact => {
+      return contact.name;
     });
+    let newArrayNames = [];
+    for (const name of names) {
+      newArrayNames.push(name.toLowerCase().split(' '));
+    }
+
+    if (
+      newArrayNames.some(name => {
+        return name.includes(this.state.name.toLowerCase().trim());
+      })
+    ) {
+      alert(`${this.state.name} is already in contacts.`);
+    } else {
+      this.setState(prev => {
+        return {
+          contacts: [
+            ...prev.contacts,
+            { id: nanoid(), name: this.state.name, number: this.state.number },
+          ],
+          name: '',
+        };
+      });
+    }
     e.target.reset();
+  };
+
+  handleClickDelete = id => {
+    this.setState(prev => ({
+      contacts: prev.contacts.filter(contact => {
+        return contact.id !== id;
+      }),
+      filter: '',
+    }));
   };
 
   render() {
     return (
       <div>
-        <form onSubmit={this.handleOnSubmit}>
-          <label htmlFor="nameContact">
-            Name
-            <input
-              type="text"
-              name="name"
-              id="nameContact"
-              required
-              placeholder="Enter name"
-              onChange={this.handleOnInputChange}
-            />
-          </label>
-          <label htmlFor="phoneContact">
-            Phone
-            <input
-              type="tel"
-              name="number"
-              id="phoneContact"
-              required
-              placeholder="Enter phone"
-              onChange={this.handleOnInputChange}
-            />
-          </label>
+        <h1>Phonebook</h1>
+        <ContactForm
+          handleOnSubmit={this.handleOnSubmit}
+          handleOnInputChange={this.handleOnInputChange}
+        />
 
-          <button type="submit">Add contact</button>
-        </form>
-        <div>
-          <h2>Contacts</h2>
-          <label htmlFor="find">
-            Find contacts by name
-            <input
-              type="text"
-              name="find"
-              id="find"
-              onChange={this.handleOnFindInputChange}
-            />
-          </label>
-          <ul>
-            {this.state.filter
-              ? this.state.filter.map(contact => (
-                  <li key={nanoid()}>
-                    {contact.name}: {contact.number}
-                  </li>
-                ))
-              : this.state.contacts.map(contact => (
-                  <li key={nanoid()}>
-                    {contact.name}: {contact.number}
-                  </li>
-                ))}
-          </ul>
-        </div>
+        <h2>Contacts</h2>
+        <Filter handleOnFindInputChange={this.handleOnFindInputChange} />
+        <ContactList {...this.state} onDeleteContact={this.handleClickDelete} />
       </div>
     );
   }
