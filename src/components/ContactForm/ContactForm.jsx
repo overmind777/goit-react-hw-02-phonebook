@@ -1,32 +1,31 @@
+import { StyledContactForm, StyledButton } from './StyledContactForm';
+
 const ContactForm = ({ handleOnSubmit, handleOnInputChange }) => {
   return (
     <>
-      <form onSubmit={handleOnSubmit}>
-        <label htmlFor="nameContact">
-          Name
-          <input
-            type="text"
-            name="name"
-            id="nameContact"
-            required
-            placeholder="Enter name"
-            onChange={handleOnInputChange}
-          />
-        </label>
-        <label htmlFor="phoneContact">
-          Phone
-          <input
-            type="tel"
-            name="number"
-            id="phoneContact"
-            required
-            placeholder="Enter phone"
-            onChange={handleOnInputChange}
-          />
-        </label>
+      <StyledContactForm onSubmit={handleOnSubmit}>
+        <label htmlFor="nameContact">Name</label>
+        <input
+          type="text"
+          name="name"
+          id="nameContact"
+          required
+          placeholder="Enter name"
+          onChange={handleOnInputChange}
+        />
 
-        <button type="submit">Add contact</button>
-      </form>
+        <label htmlFor="phoneContact">Phone</label>
+        <input
+          type="tel"
+          name="number"
+          id="phoneContact"
+          required
+          placeholder="Enter phone"
+          onChange={handleOnInputChange}
+        />
+
+        <StyledButton type="submit">Add contact</StyledButton>
+      </StyledContactForm>
     </>
   );
 };

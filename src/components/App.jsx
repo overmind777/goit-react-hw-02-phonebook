@@ -1,8 +1,9 @@
-import { nanoid } from 'nanoid';
 import { Component } from 'react';
 import Filter from './Filter/Filter';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
+import { Global } from './StyledGlobal';
+import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
@@ -16,12 +17,10 @@ export class App extends Component {
   };
 
   handleOnInputChange = e => {
-    e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
   };
 
   handleOnFindInputChange = e => {
-    e.preventDefault();
     const { contacts } = this.state;
     let name = e.target.value;
     const findedContacts = contacts.filter(contact =>
@@ -32,6 +31,7 @@ export class App extends Component {
 
   handleOnSubmit = e => {
     e.preventDefault();
+
     const contacts = this.state.contacts;
     const names = contacts.map(contact => {
       return contact.name;
@@ -72,7 +72,7 @@ export class App extends Component {
 
   render() {
     return (
-      <div>
+      <Global>
         <h1>Phonebook</h1>
         <ContactForm
           handleOnSubmit={this.handleOnSubmit}
@@ -82,7 +82,7 @@ export class App extends Component {
         <h2>Contacts</h2>
         <Filter handleOnFindInputChange={this.handleOnFindInputChange} />
         <ContactList {...this.state} onDeleteContact={this.handleClickDelete} />
-      </div>
+      </Global>
     );
   }
 }
