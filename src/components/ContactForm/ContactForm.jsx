@@ -13,8 +13,7 @@ class ContactForm extends Component {
     e.preventDefault();
 
     const { name, number } = this.state;
-
-    const { handleAddContacts, contacts } = this.props;
+    const { handleAddContacts } = this.props;
 
     const isNameExists = this.props.contacts.some(
       contact => contact.name === name
