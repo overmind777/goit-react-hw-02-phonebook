@@ -21,9 +21,6 @@ export class App extends Component {
     }));
   };
 
-  //return this.state.contacts.filter(user => user.name.toLocaleLowerCase().includes(this.state.filter.toLocaleLowerCase()))
-  // взяти массив даних
-
   handleOnFindInputChange = e => {
     const value = e.target.value;
     this.setState({ filter: value.toLowerCase() });
