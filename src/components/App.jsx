@@ -16,49 +16,26 @@ export class App extends Component {
     filter: '',
   };
 
-  handleOnInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+  handleAddContacts = newContact => {
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
+
+  //return this.state.contacts.filter(user => user.name.toLocaleLowerCase().includes(this.state.filter.toLocaleLowerCase()))
+  // взяти массив даних
 
   handleOnFindInputChange = e => {
-    const { contacts } = this.state;
-    let name = e.target.value;
-    const findedContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().trim().includes(name.toLowerCase())
-    );
-    this.setState({ filter: findedContacts });
+    const value = e.target.value;
+    this.setState({ filter: value.toLowerCase() });
   };
 
-  handleOnSubmit = e => {
-    e.preventDefault();
-
-    const contacts = this.state.contacts;
-    const names = contacts.map(contact => {
-      return contact.name;
-    });
-    let newArrayNames = [];
-    for (const name of names) {
-      newArrayNames.push(name.toLowerCase().split(' '));
-    }
-
-    if (
-      newArrayNames.some(name => {
-        return name.includes(this.state.name.toLowerCase().trim());
-      })
-    ) {
-      alert(`${this.state.name} is already in contacts.`);
-    } else {
-      this.setState(prev => {
-        return {
-          contacts: [
-            ...prev.contacts,
-            { id: nanoid(), name: this.state.name, number: this.state.number },
-          ],
-          name: '',
-        };
-      });
-    }
-    e.target.reset();
+  getVisibleContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
   };
 
   handleClickDelete = id => {
@@ -71,17 +48,25 @@ export class App extends Component {
   };
 
   render() {
+    const { contacts, filter } = this.state;
+    const visibleContacts = this.getVisibleContacts();
     return (
       <Global>
         <h1>Phonebook</h1>
         <ContactForm
-          handleOnSubmit={this.handleOnSubmit}
-          handleOnInputChange={this.handleOnInputChange}
+          handleAddContacts={this.handleAddContacts}
+          contacts={contacts}
         />
 
         <h2>Contacts</h2>
-        <Filter handleOnFindInputChange={this.handleOnFindInputChange} />
-        <ContactList {...this.state} onDeleteContact={this.handleClickDelete} />
+        <Filter
+          value={filter}
+          handleOnFindInputChange={this.handleOnFindInputChange}
+        />
+        <ContactList
+          contacts={visibleContacts}
+          onDeleteContact={this.handleClickDelete}
+        />
       </Global>
     );
   }

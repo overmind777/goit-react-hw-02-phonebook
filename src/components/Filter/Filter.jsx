@@ -1,6 +1,7 @@
 import { StyledFilter } from './StyledFilter';
+import PropTypes from 'prop-types';
 
-const Filter = ({ handleOnFindInputChange }) => {
+const Filter = ({ handleOnFindInputChange, value }) => {
   return (
     <StyledFilter>
       <label htmlFor="find">Find contacts by name</label>
@@ -8,6 +9,7 @@ const Filter = ({ handleOnFindInputChange }) => {
         type="text"
         name="find"
         id="find"
+        value={value}
         onChange={handleOnFindInputChange}
       />
     </StyledFilter>
@@ -15,3 +17,8 @@ const Filter = ({ handleOnFindInputChange }) => {
 };
 
 export default Filter;
+
+Filter.propTypes = {
+  handleOnFindInputChange: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
+};
